@@ -1,17 +1,10 @@
-using Serilog.Events;
 using Serilog;
-using Serilog.Formatting.Compact;
-
+var configuration = new ConfigurationBuilder()
+                      .AddJsonFile("appsettings.json")
+                      .Build();
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-    .Enrich.WithThreadId()
-    .Enrich.WithProcessId()
-    .Enrich.WithEnvironmentName()
-    .Enrich.WithMachineName()
-    .WriteTo.Console(new CompactJsonFormatter())
-    .WriteTo.File(new CompactJsonFormatter(),"Log/log.txt",rollingInterval: RollingInterval.Day)
-    .CreateLogger();
+    .ReadFrom.Configuration(configuration)
+   .CreateLogger();
 
 Log.Logger.Information("Logging is working fine");
 var builder = WebApplication.CreateBuilder(args);
