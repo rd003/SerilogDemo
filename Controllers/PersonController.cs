@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SerilogDemo.Exceptions;
 
 namespace SerilogDemo.Controllers
 {
@@ -14,20 +15,45 @@ namespace SerilogDemo.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
         {
-            try
+            if (id == 1)
             {
                 int a = 5;
                 int c = a / 0;
-                return Ok();
             }
-            catch (Exception ex)
+            else if (id == 2)
             {
-                _logger.LogError(ex.Message);
-                return StatusCode(500);
+                throw new NotFoundException("record does not found");
             }
+            else
+            {
+                throw new BadRequestException("Bad request");
+            }
+
+            return Ok();
         }
+
+        [HttpGet]
+        public IActionResult Get()
+        {
+            int a = 5;
+            int c = a / 0;
+            return Ok();
+
+            //try
+            //{
+            //    int a = 5;
+            //    int c = a / 0;
+            //    return Ok();
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.LogError(ex.Message);
+            //    return StatusCode(500);
+            //}
+        }
+
     }
 }
